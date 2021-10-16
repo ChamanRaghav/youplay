@@ -274,6 +274,9 @@ PODS:
     - glog
   - react-native-slider (4.1.9):
     - React-Core
+  - react-native-track-player (2.1.1):
+    - React-Core
+    - SwiftAudioEx (= 0.14.2)
   - React-perflogger (0.66.0)
   - React-RCTActionSheet (0.66.0):
     - React-Core/RCTActionSheetHeaders (= 0.66.0)
@@ -341,6 +344,7 @@ PODS:
     - React-perflogger (= 0.66.0)
   - RNVectorIcons (8.1.0):
     - React-Core
+  - SwiftAudioEx (0.14.2)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -387,6 +391,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
+  - react-native-track-player (from `../node_modules/react-native-track-player`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -417,6 +422,7 @@ SPEC REPOS:
     - fmt
     - libevent
     - OpenSSL-Universal
+    - SwiftAudioEx
     - YogaKit
 
 EXTERNAL SOURCES:
@@ -456,6 +462,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/logger"
   react-native-slider:
     :path: "../node_modules/@react-native-community/slider"
+  react-native-track-player:
+    :path: "../node_modules/react-native-track-player"
   React-perflogger:
     :path: "../node_modules/react-native/ReactCommon/reactperflogger"
   React-RCTActionSheet:
@@ -516,7 +524,8 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 6a05173dc0142abc582bd4edd2d23146b8cc218a
   React-jsinspector: be95ad424ba9f7b817aff22732eb9b1b810a000a
   React-logger: 9a9cd87d4ea681ae929b32ef580638ff1b50fb24
-  react-native-slider: f1d81950c1768047d7e5ad668eec1ac560a326d4
+  react-native-slider: c4bee37b3fe65aaf3b266bb2173d56cb412cb5ae
+  react-native-track-player: 8a3e5dd0ac608dd3ba9888dac93901b7691c69c4
   React-perflogger: 1f554c2b684e2f484f9edcdfdaeedab039fbaca8
   React-RCTActionSheet: 610d5a5d71ab4808734782c8bca6a12ec3563672
   React-RCTAnimation: ec6ed97370ace32724c253f29f0586cafcab8126
@@ -530,9 +539,10 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: 4bb657a97aa74568d9ed634c8bd478299bb8a3a6
   ReactCommon: eb059748e842a1a86025ebbd4ac9d99e74492f88
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
+  SwiftAudioEx: df9d62dcae6c2eca358bc36eb972ebac440cd943
   Yoga: c11abbf5809216c91fcd62f5571078b83d9b6720
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: be7eb9d78d3d0a8206e806f05b31af56fd4c3f18
+PODFILE CHECKSUM: 457cdbc26c4d9b86d142f818603f0f6823c5ef05
 
 COCOAPODS: 1.11.2
