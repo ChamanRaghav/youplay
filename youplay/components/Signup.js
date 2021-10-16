@@ -13,7 +13,7 @@ function Signup() {
                 Birthday
             </Text>
             <Text style={styles.birthdayPrivateTextStyle}>
-                Your birthday is private!!!
+                Your birthday is private.
             </Text>
             <TextInput
                 style={styles.passwordTextInputStyle}

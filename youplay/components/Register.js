@@ -13,14 +13,14 @@ function Register() {
     return (
         <>
             <View style={styles.registerControlButtonContainer}>
-                <View style={styles.buttonViewStyle}>
+                <View style={[styles.buttonViewStyle, activeTab === LOGIN && styles.activeTabStyle]}>
                     <TouchableOpacity
                      onPress={() => setActiveTab(LOGIN)}
                     >
                         <Text style={styles.buttonTextStyle}>Login</Text>
                     </TouchableOpacity>
                 </View>
-                <View style={styles.buttonViewStyle}>
+                <View style={[styles.buttonViewStyle, activeTab === SIGNUP && styles.activeTabStyle]}>
                     <TouchableOpacity
                      onPress={() => setActiveTab(SIGNUP)}
                     >
@@ -48,10 +48,14 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     buttonViewStyle: {
-        borderBottomColor: 'orange',
-        borderBottomWidth: 5,
+        // borderBottomColor: 'orange',
+        // borderBottomWidth: 5,
         paddingBottom: 10,
         paddingHorizontal: 20
+    },
+    activeTabStyle: {
+        borderBottomColor: 'orange',
+        borderBottomWidth: 5,
     }
   });
 
