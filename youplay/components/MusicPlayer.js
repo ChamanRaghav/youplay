@@ -13,7 +13,7 @@ const songs = [
         url: 'https://pagalsong.in/uploads/systemuploads/mp3/Jabardast Dost - Korala Maan/Jabardast Dost - Korala Maan 128 Kbps.mp3',
         title: 'Jabardast Dost',
         artist: 'Korala Maan',
-        artwork: 'https://picsum.photos/200'
+        artwork: 'https://pagalsong.in/uploads//thumbnails/300x300/id3Picture_826985220.jpg'
     },
     {
         id: 'trackId2',
@@ -34,7 +34,7 @@ const songs = [
         url: 'https://pagalsong.in/uploads/systemuploads/mp3/Churi - Khan Bhaini/Churi - Khan Bhaini 128 Kbps.mp3',
         title: 'Churi',
         artist: 'Khan Bhaini',
-        artwork: 'https://pagalsong.in/uploads/systemuploads/mp3/Churi - Khan Bhaini/Churi - Khan Bhaini 128 Kbps.mp3'
+        artwork: 'https://pagalsong.in/uploads//thumbnails/300x300/id3Picture_719977274.jpg'
     }
 ]
 
@@ -59,8 +59,22 @@ function MusicPlayer() {
     // const currentTrack = async () => await TrackPlayer.getCurrentTrack()
     // console.log('songs', currentTrack())
 
-    const playNext = async () => await TrackPlayer.skipToNext()
-    const playPrevious = async () => await TrackPlayer.skipToPrevious()
+    const getCurrentTrackId = async () => {
+        const currentTrackId = await TrackPlayer.getCurrentTrack()
+        if (currentTrackId !== null) {
+            const currentTrackInfo = await TrackPlayer.getTrack(currentTrackId)
+            setCurrentTrack(currentTrackInfo);
+        }
+        return currentTrackId
+    }
+    const playNext = async () => {
+        await TrackPlayer.skipToNext()
+        await getCurrentTrackId()
+    }
+    const playPrevious = async () => {
+        await TrackPlayer.skipToPrevious()
+        await getCurrentTrackId()
+    }
 
     const playPauseMusic = async (playbackState) => {
         const currentTrackId = await TrackPlayer.getCurrentTrack()
