@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Animated, Easing, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Animated, ndler, Easing, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Slider from '@react-native-community/slider';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
@@ -23,6 +23,7 @@ function MusicPlayer ({setActiveTab}) {
     const playbackState = usePlaybackState()
     const heartOpacity = useRef(new Animated.Value(1)).current;
     const heartOutlineOpacity = useRef(new Animated.Value(1)).current;
+    const songImageOpacity = useRef(new Animated.Value(1)).current;
 
     useEffect(() => {
         setupMusicPlayer()
@@ -39,11 +40,11 @@ function MusicPlayer ({setActiveTab}) {
         }).start()
     
     const handleFavoriteSelection = (value) => {
-        applyAnimation(value ? heartOutlineOpacity : heartOpacity, 0, 1000)
+        applyAnimation(value ? heartOutlineOpacity : heartOpacity, 0, 500)
         setTimeout(() => {
             setIsFavorite(!value)
-            applyAnimation(value ? heartOpacity : heartOutlineOpacity, 1, 1000)
-        }, 1000)
+            applyAnimation(value ? heartOpacity : heartOutlineOpacity, 1, 500)
+        }, 500)
     }
 
     const handleRepeatMode = () => {
@@ -74,12 +75,20 @@ function MusicPlayer ({setActiveTab}) {
         return currentTrackId
     }
     const playNext = async () => {
+        applyAnimation(songImageOpacity, 0, 500)
         await TrackPlayer.skipToNext()
-        await getCurrentTrackId()
+        setTimeout(async () => {
+            applyAnimation(songImageOpacity, 1, 500)
+            await getCurrentTrackId()
+        }, 500)
     }
     const playPrevious = async () => {
+        applyAnimation(songImageOpacity, 0, 500)
         await TrackPlayer.skipToPrevious()
-        await getCurrentTrackId()
+        setTimeout(async () => {
+            applyAnimation(songImageOpacity, 1, 500)
+            await getCurrentTrackId()
+        }, 500)
     }
 
     const playPauseMusic = async (playbackState) => {
@@ -96,13 +105,13 @@ function MusicPlayer ({setActiveTab}) {
 
     return (
         <View style={styles.playerContainerStyle}>
-            <View style={styles.songImageViewStyle}>
+            <Animated.View style={[styles.songImageViewStyle, { opacity: songImageOpacity }]}>
                 <Image
                     style={styles.songImageStyle}
                     source={{ uri: currentTrack?.artwork || 'https://picsum.photos/200' }}
                     height={300}
                 />
-            </View>
+            </Animated.View>
 
             <View style={styles.songsNameMoreViewStyle}>
                 <View style={styles.songNameInfoViewStyle}>
@@ -247,7 +256,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-end',
-        paddingVertical: '10%',
+        // paddingVertical: '10%',
         paddingHorizontal: '5%'
     }
 })
