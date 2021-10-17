@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
+import { Animated, Easing, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Slider from '@react-native-community/slider';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import FeathersIcon from 'react-native-vector-icons/MaterialIcons';
-import TrackPlayer, {State, useProgress, usePlaybackState} from 'react-native-track-player';
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import TrackPlayer, {State, useProgress, usePlaybackState, RepeatMode} from 'react-native-track-player';
 
 // import songs from '../mp3Data.js'
+const { Off, Queue, Track } = RepeatMode
 
 const songs = [
     {
@@ -39,25 +40,70 @@ const songs = [
 ]
 
 const setupMusicPlayer = async () => {
-    // Set up the player
     await TrackPlayer.setupPlayer();
-
-    // Add a track to the queue
     await TrackPlayer.add(songs);
 };
 
 function MusicPlayer() {
     const [currentTrack, setCurrentTrack] = useState({})
+    const [repeateMode, setRepeateMode] = useState(Off)
+    const [isFavorite, setIsFavorite] = useState(false)
     const progress = useProgress()
     const playbackState = usePlaybackState()
+    const heartOpacity = useRef(new Animated.Value(1)).current;
+    const heartOutlineOpacity = useRef(new Animated.Value(1)).current;
 
     useEffect(() => {
         setupMusicPlayer()
+        getCurrentTrackId()
         return () => { }
     }, [])
 
-    // const currentTrack = async () => await TrackPlayer.getCurrentTrack()
-    // console.log('songs', currentTrack())
+    // useEffect(() => {
+    //     const animateProp = isFavorite ? heartOpacity: heartOutlineOpacity
+    //         Animated.timing(animateProp, {
+    //             toValue: isFavorite ? 1 : 0.5,
+    //             duration: 1000,
+    //             easing: Easing.ease,
+    //             useNativeDriver: false
+    //         }).start()
+    // }, [isFavorite])
+
+    const applyAnimation = (prop, toValue, duration) => 
+        Animated.timing(prop, {
+                toValue,
+                duration,
+                easing: Easing.ease,
+                useNativeDriver: false
+        }).start()
+    
+    const handleFavoriteSelection = (value) => {
+        console.log('isFavorite', value)
+        applyAnimation(value ? heartOutlineOpacity : heartOpacity, 0, 1000)
+        setTimeout(() => {
+            setIsFavorite(!value)
+            applyAnimation(value ? heartOpacity : heartOutlineOpacity, 1, 1000)
+        }, 1000)
+    }
+
+    const handleRepeatMode = () => {
+        if (repeateMode === Off) {
+            TrackPlayer.setRepeatMode(Queue)
+            setRepeateMode(Queue)
+        } else if (repeateMode === Queue) {
+            TrackPlayer.setRepeatMode(Track)
+            setRepeateMode(Track)
+        } else {
+            TrackPlayer.setRepeatMode(Off)
+            setRepeateMode(Off)
+        }
+    }
+
+    const getRepeatIcon = () => {
+        if (repeateMode === Off) return 'repeat-off'
+        else if (repeateMode === Queue) return 'repeat'
+        else return 'repeat-once'
+    }
 
     const getCurrentTrackId = async () => {
         const currentTrackId = await TrackPlayer.getCurrentTrack()
@@ -128,7 +174,7 @@ function MusicPlayer() {
 
             <View style={styles.playerControlButtonsStyle}>
                 <TouchableOpacity onPress={playPrevious}>
-                    <Icon name="caret-left" size={50} />
+                    <Icon name="caret-left" size={60} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => playPauseMusic(playbackState)}>
                     {playbackState === State.Playing ?
@@ -137,19 +183,40 @@ function MusicPlayer() {
                     }
                 </TouchableOpacity>
                 <TouchableOpacity onPress={playNext}>
-                    <Icon name="caret-right" size={50} />
+                    <Icon name="caret-right" size={60} />
                 </TouchableOpacity>
             </View>
 
             <View style={styles.repeatControlStyle}>
-                <FeathersIcon name="repeat" size={35} />
-                <FeathersIcon name="repeat-one" size={35} />
+                <TouchableOpacity onPress={() => handleFavoriteSelection(isFavorite)}>
+                    {!isFavorite ? (
+                        <Animated.View style={[styles.heartIconStyle, {opacity: heartOpacity}]}>
+                            <MaterialCommunityIcon name='heart' size={40} color='red' />
+                        </Animated.View>
+                    ) : (
+                        <Animated.View style={[styles.heartIconStyle, {opacity: heartOutlineOpacity}]}>
+                            <MaterialCommunityIcon name='heart-outline' size={40} color='black' />
+                        </Animated.View>
+                    )}
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleRepeatMode}>
+                    <View style={styles.heartIconStyle}>
+                        <MaterialCommunityIcon name={getRepeatIcon()} size={40} />
+                    </View>
+                </TouchableOpacity>
             </View>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
+    heartIconStyle: {
+        // backgroundColor: 'red',
+        borderRadius: 35,
+        padding: 15,
+        borderColor: 'lightgrey',
+        borderWidth: 1
+    },
     sliderAndTimerViewStyle: {
         paddingVertical: '5%'
     },
@@ -185,7 +252,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         paddingVertical: 10,
-        paddingHorizontal: 20
+        paddingHorizontal: 30,
+        // backgroundColor: 'red',
+        alignItems: 'center'
     },
     repeatControlStyle: {
         display: 'flex',
