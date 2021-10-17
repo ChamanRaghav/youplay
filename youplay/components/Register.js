@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import Login from './Login'
 import Signup from './Signup'
 // import styles from '../styles/register'
@@ -14,18 +14,18 @@ function Register() {
         <>
             <View style={styles.registerControlButtonContainer}>
                 <View style={[styles.buttonViewStyle, activeTab === LOGIN && styles.activeTabStyle]}>
-                    <TouchableOpacity
+                    <TouchableWithoutFeedback
                      onPress={() => setActiveTab(LOGIN)}
                     >
                         <Text style={styles.buttonTextStyle}>Login</Text>
-                    </TouchableOpacity>
+                    </TouchableWithoutFeedback>
                 </View>
                 <View style={[styles.buttonViewStyle, activeTab === SIGNUP && styles.activeTabStyle]}>
-                    <TouchableOpacity
+                    <TouchableWithoutFeedback
                      onPress={() => setActiveTab(SIGNUP)}
                     >
                         <Text style={styles.buttonTextStyle}>Sign Up</Text>
-                    </TouchableOpacity>
+                    </TouchableWithoutFeedback>
                 </View>
             </View>
             <View>
@@ -37,19 +37,17 @@ function Register() {
 
 const styles = StyleSheet.create({
     registerControlButtonContainer: {
-        // backgroundColor: 'red', // Used to apply style :-) 
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-evenly',
-        marginTop: '20%',
+        marginTop: '10%',
     },
     buttonTextStyle: {
         fontSize: 22,
         fontWeight: '600',
+        color: '#000'
     },
     buttonViewStyle: {
-        // borderBottomColor: 'orange',
-        // borderBottomWidth: 5,
         paddingBottom: 10,
         paddingHorizontal: 20
     },

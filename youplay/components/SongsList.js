@@ -1,38 +1,54 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { songs } from './songs'
-import TrackPlayer from 'react-native-track-player';
+import TrackPlayer, { usePlaybackState, State } from 'react-native-track-player';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
+import SimpleLineIcon from 'react-native-vector-icons/SimpleLineIcons'
 
-const PLAYER = 'Player'
+function SongsList({currentTrack, setCurrentTrack }) {
+    const [filteredSongs, setFilteredSongs] = useState([songs])
+    const playbackState = usePlaybackState()
 
-function SongsList({ setActiveTab }) {
-    
+    useEffect(() => {
+        setFilteredSongs(songs)
+    }, [songs])
+
     const playSong = async (index) => {
-        await TrackPlayer.skip(index)
-        setActiveTab(PLAYER)
+        if(songs[index]?.id === currentTrack.id) {
+            if(playbackState === State.Playing) return await TrackPlayer.pause()
+            else return await TrackPlayer.play()
+        } else {
+            await TrackPlayer.skip(index)
+            await TrackPlayer.play()
+            setCurrentTrack(await TrackPlayer.getTrack(index))
+        }
     }
 
     return (
         <View style={styles.songsContainerStyle}>
             <View style={styles.allSongsHeaderView}>
                 <Text style={styles.allSongsTextStyle}>Music</Text>
+                <FontAwesomeIcon name="search" size={40} color='black'/>
             </View>
 
             <View style={styles.songsListViewStyle}>
-                {songs.map((song, index) => (
-                    <View style={styles.songsItemViewStyle} key={song.id}>
+                {filteredSongs.map((song, index) => (
+                    <View style={styles.songsItemViewStyle} key={index}>
                         <View>
                             <Image source={{uri: song.artwork || 'https://picsum.photos/200'}} height={200} style={styles.songImageStyle} />
                         </View>
                         <View style={styles.songNameArtistViewStyle}>
-                                <Text style={styles.songNameTextStyle}>{song.title}</Text>
-                                <Text style={styles.songArtistTextStyle}>{song.artist}</Text>
+                                <Text style={styles.songNameTextStyle}>{song.title || 'Song Name N/A'}</Text>
+                                <Text style={styles.songArtistTextStyle}>{song.artist || 'Song Artist N/A'}</Text>
                         </View>
                         <View style={styles.playIconViewStyle}>
                             <View style={styles.playIconView}>
                                 <TouchableOpacity onPress={() => playSong(index)}>
-                                        <Icon name="play" size={40} />
+                                    { (currentTrack?.id === song?.id && playbackState === State.Playing) ? 
+                                        (<SimpleLineIcon name='equalizer' size={40} color='black'/>) :
+                                        (<Icon name="play" size={40} color='black'/>)
+                                    }    
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -47,28 +63,33 @@ const styles = StyleSheet.create({
     songsListViewStyle: {},
     allSongsHeaderView: {
         padding: 10,
-        alignItems: 'center',
         backgroundColor: '#edf5ff',
-        marginVertical: 10
+        marginVertical: 10,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingHorizontal: 20
     },
     allSongsTextStyle: {
         fontSize: 30,
-        fontWeight: '600'
+        fontWeight: '600',
+        color: '#000'
     },
     songsContainerStyle: {},
     playIconView: {
-        borderRadius: 40,
-        backgroundColor: '#f0f4f7',
-        padding: 10
+        borderRadius: 10,
+        backgroundColor:  'white', // '#f0f4f7',
+        padding: 5
     },
     playIconViewStyle: {
         position: 'absolute',
-        right: 15,
+        right: 5,
         borderRadius: 20
     },
     songNameTextStyle: {
         fontSize: 24,
-        fontWeight: '400'
+        fontWeight: '400',
+        color: '#000'
     },
     songArtistTextStyle: {
         fontSize: 20,

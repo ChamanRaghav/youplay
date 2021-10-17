@@ -1,17 +1,23 @@
 import React from 'react'
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { useDimensions } from '@react-native-community/hooks'
 
 function Login() {
+    // const {width, height} = useDimensions().screen
+
     return (
         <View style={styles.loginContainerStyle}>
             
             <TextInput
                 style={styles.passwordTextInputStyle}
                 placeholder={'Email'}
+                keyboardType='email-address'
+                autoCapitalize='none'
             />
             <TextInput
                 style={styles.passwordTextInputStyle}
                 placeholder={'Password'}
+                // keyboardType='password'
             />
 
             <Text style={styles.forgotPasswordTextStyle}>
@@ -41,11 +47,15 @@ const styles = StyleSheet.create({
         paddingVertical: 20,
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-around'
+        justifyContent: 'space-around',
+        // position: 'absolute',
+        // bottom: 0
     },
     loginContainerStyle: {
         marginHorizontal: '5%',
-        paddingVertical: '20%'
+        marginTop: '5%',
+        // height: height
+        color: '#000'
     },
     passwordTextInputStyle: {
         paddingHorizontal: 20,

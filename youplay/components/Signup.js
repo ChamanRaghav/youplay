@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     },
     signupContainerStyle: {
         marginHorizontal: '5%',
-        paddingVertical: '20%'
+        marginTop: '5%'
     },
     emailTextInputStyle: {
         paddingHorizontal: 20,
@@ -91,7 +91,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 20,
         marginVertical: 15,
-        // backgroundColor: '#f5f7ff',
         borderRadius: 10,
         opacity: .5,
         fontWeight: '400',

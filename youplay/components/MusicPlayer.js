@@ -1,22 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Animated, ndler, Easing, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Animated, ndler, Easing, Image, StyleSheet, Text, TouchableOpacity, View, TouchableWithoutFeedback } from 'react-native'
 import Slider from '@react-native-community/slider';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import TrackPlayer, {State, useProgress, usePlaybackState, RepeatMode} from 'react-native-track-player';
-import { songs } from './songs'
 
 const { Off, Queue, Track } = RepeatMode
 const SONGS_LIST = 'SongsList'
 
-const setupMusicPlayer = async () => {
-    await TrackPlayer.setupPlayer();
-    await TrackPlayer.add(songs);
-};
-
-function MusicPlayer ({setActiveTab}) {
-    const [currentTrack, setCurrentTrack] = useState({})
+function MusicPlayer ({setActiveTab, currentTrack, setCurrentTrack}) {
     const [repeateMode, setRepeateMode] = useState(Off)
     const [isFavorite, setIsFavorite] = useState(false)
     const progress = useProgress()
@@ -25,11 +18,10 @@ function MusicPlayer ({setActiveTab}) {
     const heartOutlineOpacity = useRef(new Animated.Value(1)).current;
     const songImageOpacity = useRef(new Animated.Value(1)).current;
 
-    useEffect(() => {
-        setupMusicPlayer()
-        getCurrentTrackId()
-        return () => { }
-    }, [])
+    // useEffect(() => {
+    //     getCurrentTrackId()
+    //     // return () => {}
+    // }, [])
 
     const applyAnimation = (prop, toValue, duration) => 
         Animated.timing(prop, {
@@ -74,6 +66,7 @@ function MusicPlayer ({setActiveTab}) {
         }
         return currentTrackId
     }
+    
     const playNext = async () => {
         applyAnimation(songImageOpacity, 0, 500)
         await TrackPlayer.skipToNext()
@@ -121,7 +114,7 @@ function MusicPlayer ({setActiveTab}) {
                 </View>
                 <TouchableOpacity onPress={() => setActiveTab(SONGS_LIST)}>
                     <View style={styles.moreVertIconStyle}>
-                        <MaterialIcons name="more-vert" size={40} />
+                        <MaterialIcons name="more-vert" size={40} color='black' />
                     </View>
                 </TouchableOpacity>
             </View>
@@ -135,9 +128,7 @@ function MusicPlayer ({setActiveTab}) {
                     minimumTrackTintColor="#000"
                     maximumTrackTintColor="lightgrey"
                     tapToSeek={true}
-                    onSlidingComplete={async (value) => {
-                        await TrackPlayer.seekTo(value)
-                    }}
+                    onSlidingComplete={async (value) => await TrackPlayer.seekTo(value)}
                 />
                 <View style={styles.playedTimerViewStyle}>
                     <Text style={styles.timerTextStyle}>
@@ -150,22 +141,26 @@ function MusicPlayer ({setActiveTab}) {
             </View>
 
             <View style={styles.playerControlButtonsStyle}>
-                <TouchableOpacity onPress={playPrevious}>
-                    <Icon name="caret-left" size={60} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => playPauseMusic(playbackState)}>
+                <TouchableWithoutFeedback onPress={playPrevious}>
+                    <View style={styles.prevNextIconViewStyle}>
+                        <Icon name="caret-left" size={70} color='black'/>
+                    </View>
+                </TouchableWithoutFeedback>
+                <TouchableWithoutFeedback onPress={() => playPauseMusic(playbackState)}>
                     {playbackState === State.Playing ?
-                        (<Icon name="pause-circle" size={70} />) :
-                        (<Icon name="play-circle" size={70} />)
+                        (<Icon name="pause-circle" size={80} color='black'/>) :
+                        (<Icon name="play-circle" size={80} color='black'/>)
                     }
-                </TouchableOpacity>
-                <TouchableOpacity onPress={playNext}>
-                    <Icon name="caret-right" size={60} />
-                </TouchableOpacity>
+                </TouchableWithoutFeedback>
+                <TouchableWithoutFeedback onPress={playNext}>
+                    <View style={styles.prevNextIconViewStyle}>
+                        <Icon name="caret-right" size={70} color='black'/>
+                    </View>
+                </TouchableWithoutFeedback>
             </View>
 
             <View style={styles.repeatControlStyle}>
-                <TouchableOpacity onPress={() => handleFavoriteSelection(isFavorite)}>
+                <TouchableWithoutFeedback onPress={() => handleFavoriteSelection(isFavorite)}>
                     {!isFavorite ? (
                         <Animated.View style={[styles.heartIconStyle, {opacity: heartOpacity}]}>
                             <MaterialCommunityIcon name='heart' size={40} color='red' />
@@ -175,23 +170,30 @@ function MusicPlayer ({setActiveTab}) {
                             <MaterialCommunityIcon name='heart-outline' size={40} color='black' />
                         </Animated.View>
                     )}
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleRepeatMode}>
+                </TouchableWithoutFeedback>
+                <TouchableWithoutFeedback onPress={handleRepeatMode}>
                     <View style={styles.heartIconStyle}>
-                        <MaterialCommunityIcon name={getRepeatIcon()} size={40} />
+                        <MaterialCommunityIcon name={getRepeatIcon()} size={40} color='black'/>
                     </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setActiveTab(SONGS_LIST)}>
+                </TouchableWithoutFeedback>
+                <TouchableWithoutFeedback onPress={() => setActiveTab(SONGS_LIST)}>
                     <View style={styles.heartIconStyle}>
-                        <MaterialCommunityIcon name={'playlist-music'} size={40} />
+                        <MaterialCommunityIcon name={'playlist-music'} size={40} color='black'/>
                     </View>
-                </TouchableOpacity>
+                </TouchableWithoutFeedback>
             </View>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
+    prevNextIconViewStyle: {
+        borderRadius: 15,
+        padding: 10,
+        // borderColor: '#e1eafa',
+        // borderWidth: 2,
+        backgroundColor: '#f2f5fa'
+    },
     songsNameMoreViewStyle: {
         display: 'flex',
         flexDirection: 'row',
@@ -209,7 +211,8 @@ const styles = StyleSheet.create({
         borderWidth: 1
     },
     sliderAndTimerViewStyle: {
-        paddingVertical: '5%'
+        paddingVertical: '5%',
+        // margin: 0
     },
     timerTextStyle: {
         color: 'grey'
@@ -231,6 +234,7 @@ const styles = StyleSheet.create({
     songNameTextStyle: {
         fontSize: 32,
         fontWeight: '400',
+        color: 'black'
     },
     songInfoTextStyle: {
         fontSize: 20,

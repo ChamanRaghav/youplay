@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 const EXPLORE = 'Explore'
-const PLAYER = 'player'
+const PLAYER = 'Player'
 
 function Header({activeTab, setActiveTab}) {
     return (
@@ -32,20 +32,22 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         paddingVertical: 5,
         justifyContent: 'space-between',
-        paddingHorizontal: 10
+        paddingHorizontal: 10,
+        paddingVertical: 10
     },
     headerItemStyle: {
         paddingVertical: 10,
-        paddingHorizontal: 10,
-        borderRadius: 10,
+        paddingHorizontal: 10
     },
     activeTabStyle: {
         borderWidth: 2,
         borderColor: 'orange',
+        borderRadius: 10,
     },
     headerItemTextStyle: {
         fontSize: 16,
         fontWeight: '600',
+        color: '#000'
     }
 })
 
