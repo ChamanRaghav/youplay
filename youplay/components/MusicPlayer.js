@@ -2,49 +2,20 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Animated, Easing, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Slider from '@react-native-community/slider';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import TrackPlayer, {State, useProgress, usePlaybackState, RepeatMode} from 'react-native-track-player';
+import { songs } from './songs'
 
-// import songs from '../mp3Data.js'
 const { Off, Queue, Track } = RepeatMode
-
-const songs = [
-    {
-        id: 'trackId1',
-        url: 'https://pagalsong.in/uploads/systemuploads/mp3/Jabardast Dost - Korala Maan/Jabardast Dost - Korala Maan 128 Kbps.mp3',
-        title: 'Jabardast Dost',
-        artist: 'Korala Maan',
-        artwork: 'https://pagalsong.in/uploads//thumbnails/300x300/id3Picture_826985220.jpg'
-    },
-    {
-        id: 'trackId2',
-        url: 'https://pagalsong.in/uploads/systemuploads/mp3/Sher - Diljit Dosanjh/Sher - Diljit Dosanjh 128 Kbps.mp3',
-        title: 'Sher',
-        artist: 'Diljit Dosanjh',
-        artwork: 'https://pagalsong.in/uploads//thumbnails/300x300/sher_diljit.jpg'
-    },
-    {
-        id: 'trackId3',
-        url: 'https://pagalsong.in/uploads/systemuploads/mp3/Jazbaati Bande - Khasa Aala Ch/Jazbaati Bande - Khasa Aala Chahar 128 Kbps.mp3',
-        title: 'Jazbaati Bande',
-        artist: 'Khasa Aala Chahar',
-        artwork: 'https://pagalsong.in/uploads//thumbnails/300x300/id3Picture_596556753.jpg'
-    },
-    {
-        id: 'trackId4',
-        url: 'https://pagalsong.in/uploads/systemuploads/mp3/Churi - Khan Bhaini/Churi - Khan Bhaini 128 Kbps.mp3',
-        title: 'Churi',
-        artist: 'Khan Bhaini',
-        artwork: 'https://pagalsong.in/uploads//thumbnails/300x300/id3Picture_719977274.jpg'
-    }
-]
+const SONGS_LIST = 'SongsList'
 
 const setupMusicPlayer = async () => {
     await TrackPlayer.setupPlayer();
     await TrackPlayer.add(songs);
 };
 
-function MusicPlayer() {
+function MusicPlayer ({setActiveTab}) {
     const [currentTrack, setCurrentTrack] = useState({})
     const [repeateMode, setRepeateMode] = useState(Off)
     const [isFavorite, setIsFavorite] = useState(false)
@@ -59,16 +30,6 @@ function MusicPlayer() {
         return () => { }
     }, [])
 
-    // useEffect(() => {
-    //     const animateProp = isFavorite ? heartOpacity: heartOutlineOpacity
-    //         Animated.timing(animateProp, {
-    //             toValue: isFavorite ? 1 : 0.5,
-    //             duration: 1000,
-    //             easing: Easing.ease,
-    //             useNativeDriver: false
-    //         }).start()
-    // }, [isFavorite])
-
     const applyAnimation = (prop, toValue, duration) => 
         Animated.timing(prop, {
                 toValue,
@@ -78,7 +39,6 @@ function MusicPlayer() {
         }).start()
     
     const handleFavoriteSelection = (value) => {
-        console.log('isFavorite', value)
         applyAnimation(value ? heartOutlineOpacity : heartOpacity, 0, 1000)
         setTimeout(() => {
             setIsFavorite(!value)
@@ -144,9 +104,17 @@ function MusicPlayer() {
                 />
             </View>
 
-            <View style={styles.songNameInfoViewStyle}>
-                <Text style={styles.songNameTextStyle}>{currentTrack?.title}</Text>
-                <Text style={styles.songInfoTextStyle}>{currentTrack?.artist} </Text>
+            <View style={styles.songsNameMoreViewStyle}>
+                <View style={styles.songNameInfoViewStyle}>
+                    <Text style={styles.songNameTextStyle}>{currentTrack?.title}</Text>
+                    <Text style={styles.songInfoTextStyle}>{currentTrack?.artist} </Text>
+                    
+                </View>
+                <TouchableOpacity onPress={() => setActiveTab(SONGS_LIST)}>
+                    <View style={styles.moreVertIconStyle}>
+                        <MaterialIcons name="more-vert" size={40} />
+                    </View>
+                </TouchableOpacity>
             </View>
 
             <View style={styles.sliderAndTimerViewStyle}>
@@ -204,14 +172,28 @@ function MusicPlayer() {
                         <MaterialCommunityIcon name={getRepeatIcon()} size={40} />
                     </View>
                 </TouchableOpacity>
+                <TouchableOpacity onPress={() => setActiveTab(SONGS_LIST)}>
+                    <View style={styles.heartIconStyle}>
+                        <MaterialCommunityIcon name={'playlist-music'} size={40} />
+                    </View>
+                </TouchableOpacity>
             </View>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
+    songsNameMoreViewStyle: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    moreVertIconStyle: {
+        borderRadius: 35,
+        padding: 15,
+    },
     heartIconStyle: {
-        // backgroundColor: 'red',
         borderRadius: 35,
         padding: 15,
         borderColor: 'lightgrey',
@@ -236,7 +218,6 @@ const styles = StyleSheet.create({
     },
     songNameInfoViewStyle: {
         paddingVertical: 10,
-        paddingTop: '10%'
     },
     songNameTextStyle: {
         fontSize: 32,
@@ -260,7 +241,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-around',
-        paddingVertical: 10,
+        paddingVertical: 20,
     },
     playerContainerStyle: {
         display: 'flex',
