@@ -1,14 +1,15 @@
 import React, {useEffect, useState} from 'react'
 import { View, Text, Image, StyleSheet, TouchableOpacity, Appearance } from 'react-native'
-import Icon from 'react-native-vector-icons/Ionicons'
-import { songs } from './songs'
+// import { songs } from './songs'
 import TrackPlayer, { usePlaybackState, State } from 'react-native-track-player';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
-import SimpleLineIcon from 'react-native-vector-icons/SimpleLineIcons'
 import AntDesign from 'react-native-vector-icons/AntDesign'
-import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {request, PERMISSIONS} from 'react-native-permissions';
 
-function SongsList({currentTrack, setCurrentTrack }) {
+let songs = []
+
+function LocalMusicFiles({currentTrack, setCurrentTrack }) {
     const [filteredSongs, setFilteredSongs] = useState([songs])
     const [bufferingIcon, setBufferingIcon] = useState('loading1')
     const playbackState = usePlaybackState()
@@ -17,10 +18,16 @@ function SongsList({currentTrack, setCurrentTrack }) {
         setFilteredSongs(songs)
     }, [songs])
 
+    const requestAccessPermissionAndFetchSongs = () => {
+        console.log('Request permission recieved')
+        request(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE).then((result) => {
+            console.log('result', result)
+        });
+    }
       
-  const colorScheme = Appearance.getColorScheme();
-  const isDarkMode = colorScheme === 'dark';
-  const iconColor = isDarkMode ? '#fff' : '#000'
+    const colorScheme = Appearance.getColorScheme();
+    const isDarkMode = colorScheme === 'dark';
+    const iconColor = isDarkMode ? '#fff' : '#000'
 
     const playSong = async (index) => {
         if(songs[index]?.id === currentTrack.id) {
@@ -32,15 +39,6 @@ function SongsList({currentTrack, setCurrentTrack }) {
             setCurrentTrack(await TrackPlayer.getTrack(index))
         }
     }
-
-    // TODO: Can look into it later.
-    // useEffect(() => {
-    //     if(playbackState === State.Buffering)
-    //     setInterval(() => {
-    //         setBufferingIcon(bufferingIcon === 'loading1' ? 'loading2': 'loading1')
-    //     }, 10);
-    // }, [playbackState])
-    
 
     const renderIconForSongState = (playerState) => {
         console.log('playerState', playerState)
@@ -60,10 +58,17 @@ function SongsList({currentTrack, setCurrentTrack }) {
 
     return (
         <View style={styles.songsContainerStyle}>
-            <View style={[styles.allSongsHeaderView, {backgroundColor: isDarkMode ? 'grey': 'white'}]}>
-                <Text style={styles.allSongsTextStyle}>Music</Text>
-                <FontAwesomeIcon name="search" size={30} color={iconColor}/>
+            <View style={[styles.addMusicStyle, {shadowColor: isDarkMode ? '#fff' : 'orange'}]}>
+                <Text style={styles.addMusicTextStyle}>Open Folder On Phone</Text>
+                <MaterialIcons name="library-add" size={40} color={iconColor} style={styles.addMusicIconStyle} />
             </View>
+
+            <TouchableOpacity onPress={() => requestAccessPermissionAndFetchSongs()}>
+                <View style={[styles.allSongsHeaderView, {backgroundColor: isDarkMode ? 'grey': 'white'}]}>
+                    <Text style={styles.allSongsTextStyle}>Local Music</Text>
+                    <FontAwesomeIcon name="search" size={30} color={iconColor}/>
+                </View>
+            </TouchableOpacity>
 
             <View style={styles.songsListViewStyle}>
                 {filteredSongs.map((song, index) => (
@@ -90,10 +95,33 @@ function SongsList({currentTrack, setCurrentTrack }) {
 }
 
 const styles = StyleSheet.create({
+    addMusicStyle: {
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+        paddingVertical: 10,
+        margin: 10,
+        borderRadius: 20,
+        shadowOffset: {
+            width: 90,
+            height: 0,
+        },
+        shadowOpacity: .58,
+        shadowRadius: 9,
+        elevation: 30
+    },
+    addMusicTextStyle: {
+        fontSize: 24,
+        fontWeight: '500'
+    },
+    addMusicIconStyle: {
+        // backgroundColor: 'red'
+    },
     songsListViewStyle: {},
     allSongsHeaderView: {
         padding: 7,
-        // backgroundColor: 'grey',
         marginVertical: 7,
         display: 'flex',
         flexDirection: 'row',
@@ -146,4 +174,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default SongsList
+export default LocalMusicFiles

@@ -1,5 +1,8 @@
-import React from 'react';
+import { useDimensions } from '@react-native-community/hooks';
+import React, {useEffect} from 'react';
 import {
+  Appearance,
+  Dimensions,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -16,47 +19,38 @@ import Header from './components/Header'
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
+  const colorScheme = Appearance.getColorScheme();
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  const {window, screen} = useDimensions()
+
+  
+  useEffect(() => {
+    console.log('colorScheme in App', colorScheme, isDarkMode, StatusBar.currentHeight)
+}, [colorScheme])
+
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        {/* <Header /> */}
+    <SafeAreaView style={backgroundStyle} >
+     <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+        <ScrollView contentInsetAdjustmentBehavior="automatic" style={backgroundStyle}>
         <View
-          style={{
+          style={[backgroundStyle, {  
+            flex: 1, 
+            flexDirection: 'column', 
+            // backgroundColor: 'red', 
+            minHeight: Dimensions.get('screen').height - 500,
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-            
+          }]}> 
           <Content />
-          {/* <Footer /> */}
         </View>
-      </ScrollView>
+    </ScrollView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
 });
 
 export default App;

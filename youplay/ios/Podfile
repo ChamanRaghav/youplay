@@ -16,6 +16,10 @@ target 'youplay' do
 
   pod 'react-native-track-player', :path => '../node_modules/react-native-track-player'
 
+  pod 'RNPermissions', :path => '../node_modules/react-native-permissions'
+
+  pod 'RNReactNativeGetMusicFiles', :path => '../node_modules/react-native-get-music-files'
+
   target 'youplayTests' do
     inherit! :complete
     # Pods for testing

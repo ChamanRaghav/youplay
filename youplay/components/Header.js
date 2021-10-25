@@ -1,21 +1,31 @@
-import React, {useState} from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React from 'react'
+import { Appearance, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 const EXPLORE = 'Explore'
 const PLAYER = 'Player'
 
 function Header({activeTab, setActiveTab}) {
+
+    const colorScheme = Appearance.getColorScheme();
+    const isDarkMode = colorScheme === 'dark';
+
     return (
         <View style={styles.headerContainerStyle}>
-            <TouchableOpacity onPress={() => setActiveTab(EXPLORE)}>
-                <View style={[styles.headerItemStyle, activeTab === EXPLORE && styles.activeTabStyle]}>
+            <TouchableOpacity onPress={() => setActiveTab(PLAYER)}>
+                <View style={[
+                    styles.headerItemStyle, 
+                    activeTab === EXPLORE && [styles.activeTabStyle, {borderColor : isDarkMode ? '#fff' : '#000' }]
+                    ]}>
                     <Text style={styles.headerItemTextStyle}>
                         YouPlay Explore!
                     </Text>
                 </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => setActiveTab(PLAYER)}>
-                <View style={[styles.headerItemStyle, activeTab === PLAYER && styles.activeTabStyle]}>
+                <View style={[
+                    styles.headerItemStyle, 
+                    activeTab === PLAYER && [styles.activeTabStyle, {borderColor : isDarkMode ? '#fff' : '#000' }]
+                    ]}>
                     <Text style={styles.headerItemTextStyle}>
                         Local Player
                     </Text>
@@ -29,11 +39,10 @@ const styles = StyleSheet.create({
     headerContainerStyle: {
         display: 'flex',
         flexDirection: 'row',
-        backgroundColor: 'white',
         paddingVertical: 5,
+        height: '100%',
         justifyContent: 'space-between',
         paddingHorizontal: 10,
-        paddingVertical: 10
     },
     headerItemStyle: {
         paddingVertical: 10,
@@ -41,13 +50,11 @@ const styles = StyleSheet.create({
     },
     activeTabStyle: {
         borderWidth: 2,
-        borderColor: 'orange',
         borderRadius: 10,
     },
     headerItemTextStyle: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#000'
     }
 })
 
