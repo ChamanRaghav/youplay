@@ -6,10 +6,13 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {request, PERMISSIONS} from 'react-native-permissions';
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import Evilicons from 'react-native-vector-icons/EvilIcons'
 
 let songs = []
+const PLAYER = 'Player'
 
-function LocalMusicFiles({currentTrack, setCurrentTrack }) {
+function LocalMusicFiles({setActiveTab, currentTrack, setCurrentTrack }) {
     const [filteredSongs, setFilteredSongs] = useState([songs])
     const [bufferingIcon, setBufferingIcon] = useState('loading1')
     const playbackState = usePlaybackState()
@@ -58,16 +61,20 @@ function LocalMusicFiles({currentTrack, setCurrentTrack }) {
 
     return (
         <View style={styles.songsContainerStyle}>
-            <View style={[styles.addMusicStyle, {shadowColor: isDarkMode ? '#fff' : 'orange'}]}>
+            <View style={[styles.allSongsHeaderView, {backgroundColor: isDarkMode ? 'grey': 'white'}]}>
+                    <TouchableOpacity onPress={() => setActiveTab(PLAYER)}>
+                        <Ionicons name="return-up-back" size={30}/>
+                    </TouchableOpacity>
+                    <Text style={styles.allSongsTextStyle}>Local Music</Text>
+                    <Evilicons name="search" size={30} color={iconColor}/>
+                </View>
+           
+
+            <TouchableOpacity onPress={() => requestAccessPermissionAndFetchSongs()}>
+                 <View style={[styles.addMusicStyle, {shadowColor: isDarkMode ? '#fff' : 'orange'}]}>
                 <Text style={styles.addMusicTextStyle}>Open Folder On Phone</Text>
                 <MaterialIcons name="library-add" size={40} color={iconColor} style={styles.addMusicIconStyle} />
             </View>
-
-            <TouchableOpacity onPress={() => requestAccessPermissionAndFetchSongs()}>
-                <View style={[styles.allSongsHeaderView, {backgroundColor: isDarkMode ? 'grey': 'white'}]}>
-                    <Text style={styles.allSongsTextStyle}>Local Music</Text>
-                    <FontAwesomeIcon name="search" size={30} color={iconColor}/>
-                </View>
             </TouchableOpacity>
 
             <View style={styles.songsListViewStyle}>
@@ -130,7 +137,7 @@ const styles = StyleSheet.create({
     },
     allSongsTextStyle: {
         fontSize: 30,
-        fontWeight: '600',
+        fontWeight: '400',
     },
     songsContainerStyle: {},
     playIconView: {

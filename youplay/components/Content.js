@@ -77,7 +77,8 @@ function Content() {
                             setCurrentTrack={setCurrentTrack}
                         />
             case LOCAL_MUSIC_FILES:
-                return <LocalMusicFiles 
+                return <LocalMusicFiles
+                    setActiveTab={setActiveTab}
                     currentTrack={currentTrack}
                     setCurrentTrack={setCurrentTrack}
                 />
@@ -98,7 +99,7 @@ function Content() {
             }
         ]}>
             <View style={styles.headerContainerStyle}>
-                {activeTab !== SONGS_LIST && (<Header
+                {activeTab !== SONGS_LIST || activeTab !== LOCAL_MUSIC_FILES && (<Header
                     activeTab={activeTab}
                     setActiveTab={setActiveTab}
                 />)}

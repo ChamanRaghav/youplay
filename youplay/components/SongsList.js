@@ -1,14 +1,18 @@
 import React, {useEffect, useState} from 'react'
 import { View, Text, Image, StyleSheet, TouchableOpacity, Appearance } from 'react-native'
-import Icon from 'react-native-vector-icons/Ionicons'
+// import Icon from 'react-native-vector-icons/Ionicons'
 import { songs } from './songs'
 import TrackPlayer, { usePlaybackState, State } from 'react-native-track-player';
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
-import SimpleLineIcon from 'react-native-vector-icons/SimpleLineIcons'
+// import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
+// import SimpleLineIcon from 'react-native-vector-icons/SimpleLineIcons'
 import AntDesign from 'react-native-vector-icons/AntDesign'
-import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+// import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import Evilicons from 'react-native-vector-icons/EvilIcons'
 
-function SongsList({currentTrack, setCurrentTrack }) {
+const PLAYER = 'Player'
+
+function SongsList({currentTrack, setCurrentTrack, setActiveTab }) {
     const [filteredSongs, setFilteredSongs] = useState([songs])
     const [bufferingIcon, setBufferingIcon] = useState('loading1')
     const playbackState = usePlaybackState()
@@ -61,14 +65,17 @@ function SongsList({currentTrack, setCurrentTrack }) {
     return (
         <View style={styles.songsContainerStyle}>
             <View style={[styles.allSongsHeaderView, {backgroundColor: isDarkMode ? 'grey': 'white'}]}>
-                <Text style={styles.allSongsTextStyle}>Music</Text>
-                <FontAwesomeIcon name="search" size={30} color={iconColor}/>
+                <TouchableOpacity onPress={() => setActiveTab(PLAYER)}>
+                    <Ionicons name="return-up-back" size={30}/>
+                </TouchableOpacity>
+                    <Text style={styles.allSongsTextStyle}>Music</Text>
+                <Evilicons name="search" size={40} color={iconColor}/>
             </View>
 
             <View style={styles.songsListViewStyle}>
                 {filteredSongs.map((song, index) => (
                     <TouchableOpacity  key={index} onPress={() => playSong(index)}>
-                    <View style={styles.songsItemViewStyle}>
+                    <View style={[styles.songsItemViewStyle, currentTrack?.id === song?.id && styles.activeSongStyle]}>
                         <View>
                             <Image source={{uri: song.artwork || 'https://picsum.photos/200'}} height={200} style={styles.songImageStyle} />
                         </View>
@@ -101,8 +108,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10
     },
     allSongsTextStyle: {
-        fontSize: 30,
-        fontWeight: '600',
+        fontSize: 32,
+        fontWeight: '400',
     },
     songsContainerStyle: {},
     playIconView: {
@@ -112,15 +119,16 @@ const styles = StyleSheet.create({
         right: 5,
         borderRadius: 20
     },
+    activeSongStyle: {
+        backgroundColor: '#d9e7ff'
+    },
     songNameTextStyle: {
         fontSize: 20,
         fontWeight: '400',
-        // color: '#000'
     },
     songArtistTextStyle: {
         fontSize: 16,
         fontWeight: '300',
-        // color: 'grey'
     },
     songNameArtistViewStyle: {
         display: 'flex',
